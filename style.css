@@ -14,6 +14,10 @@ body{
     background-color: var(--b1);
 }
 
+pre{
+    font-family: 'Roboto', sans-serif;
+}
+
 .board{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
