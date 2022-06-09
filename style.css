@@ -1,6 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 :root{
     font-family: 'Roboto', sans-serif;
+    --b1:#cffafe;
+    --b5: #06b6d4;
+    --b7: #0e7490;
 }
 
 body{
@@ -8,6 +11,7 @@ body{
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-color: var(--b1);
 }
 
 .board{
@@ -19,9 +23,9 @@ body{
 }
 
 .cell{
-    background-color: bisque;
-    border: 5px solid white;
-    border-radius: 10px;
+    background-color: var(--b7);
+    border: 5px solid var(--b1);
+    border-radius: 0px;
     padding: 10px;
     display: flex;
     justify-content: center;
@@ -37,4 +41,39 @@ body{
 h1{
     font-size: 4rem;
     text-decoration: underline;
+}
+
+.winner{
+    position: fixed;
+    bottom: 20%;
+    width: 100%;
+    height: 300px;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+    gap: 20px;
+}
+
+
+.winner p{
+    margin: 0;
+    width: 100%;
+    padding: 20px;
+    font-size:  3rem;
+}
+
+.winner button{
+    width: 400px;
+    padding: 30px;
+    font-size:  3rem;
+    border: none;
+    background-color: var(--b7);
+    border-radius: 20px;
+}
+
+.winner button:hover{
+    background-color: var(--b5);
 }

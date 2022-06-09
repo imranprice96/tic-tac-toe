@@ -105,31 +105,58 @@ const Player = (name, mark) => {
 const gameController = (() => {
     const player1 = Player('Player 1', 'X');
     const player2 = Player('Player 2', 'O');
+    const cells = document.querySelectorAll('.cell');
 
     let player1Turn = true;
     const changeTurn = () => player1Turn = !player1Turn;
 
+    const resetGame = () => {
+        const winnerPopup = document.getElementById('winner');
+        winnerPopup.style.display = 'none';
+        winnerPopup.innerHTML = '';
+        gameBoard.resetBoard();
+        player1Turn = true;
+        cells.forEach((cell => {
+            cell.innerHTML = '';
+        }));
+    };
 
-    const cells = document.querySelectorAll('.cell');
+    const displayWinner = (playerName) =>{
+        const winnerPopup = document.getElementById('winner');
+        let msg = document.createTextNode(`${playerName} is the winner!`);
+        let p = document.createElement('p');
+        p.appendChild(msg);
+        winnerPopup.appendChild(p);
+        winnerPopup.style.display = 'flex';
+
+        let reset = document.createElement('button');
+        reset.setAttribute('class', 'reset-btn');
+        reset.appendChild(document.createTextNode('Play Again?'));
+        reset.addEventListener('click', (e) => {
+            resetGame(e);
+        });
+        winnerPopup.appendChild(reset);
+    }
+
     cells.forEach(cell => cell.addEventListener('click', (e) => {
         cellIndex = parseInt(e.target.getAttribute('id'));
-        console.log(cellIndex);
         if(gameBoard.cellIsEmpty(cellIndex)){
-            console.log('empty');
-            if(player1Turn){
+            if(!gameBoard.checkForWinner()){
+                if(player1Turn){
                 gameBoard.changeCell(cellIndex, player1.getMark())
-                gameBoard.printBoard();
                 e.target.innerHTML = player1.getMark();
+                if(gameBoard.checkForWinner()) displayWinner(player1.getName());
                 changeTurn();
-                console.log(gameBoard.checkForWinner());
             }else{
                 gameBoard.changeCell(cellIndex, player2.getMark())
-                gameBoard.printBoard();
                 e.target.innerHTML = player2.getMark();
+                if(gameBoard.checkForWinner()) displayWinner(player2.getName());
                 changeTurn();
-                console.log(gameBoard.checkForWinner());
             }
+            }
+            
         }
     }));
 
+    return {resetGame, displayWinner};
 })();
