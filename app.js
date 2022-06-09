@@ -28,8 +28,10 @@ const gameBoard = (() => {
         board[getCell(cell)].marker = mark;
     };
     const cellIsEmpty = (cell) => {
-        return (board[cell].marker == '');
+        return (board[getCell(cell)].marker == '');
     }
+
+
     const printBoard = () => console.table(board);
     return {
         changeCell,
@@ -78,6 +80,7 @@ const gameController = (() => {
     const player2 = Player('Player 2', 'O');
 
     let player1Turn = true;
+    const changeTurn = () => player1Turn = !player1Turn;
 
     let row1 = row(1);
     let row2 = row(4);
@@ -87,6 +90,39 @@ const gameController = (() => {
     let col3 = column(3);
     let diag1 = diagonal(1,5,9);
     let diag2 = diagonal(3,5,7);
+
+    const stateContainsCell = (set, index) => {
+        return (set[0].cell == index || set[1].cell == index || set[2].cell == index);
+    }
+
+    const getCellIndex = (set, index) => {
+        if(set[0].cell == index) return 0;
+        if(set[1].cell == index) return 1;
+        if(set[2].cell == index) return 2;
+    };
+
+    let boardState = [
+        row1,
+        row2,
+        row3,
+        col1,
+        col2,
+        col3,
+        diag1,
+        diag2
+    ];
+
+    console.table(row1);
+
+    const updateBoardState = (index, newMark) => {
+        for(set in boardState){
+            if(stateContainsCell(set, index)){
+                set[getCellIndex(set,index)].mark = newMark;
+            }
+        };
+        console.table(boardState);
+    }
+
     const checkWin = (line) =>{
         if(line[0].marker != ''){
             return (
@@ -96,8 +132,19 @@ const gameController = (() => {
         return false;
     }
     
-    const updateBoardState = () => {
-
+    const checkCells = () =>{
+        if(
+            checkWin(row1) ||
+            checkWin(row2) ||
+            checkWin(row3) ||
+            checkWin(col1) ||
+            checkWin(col2) ||
+            checkWin(col3) ||
+            checkWin(diag1) ||
+            checkWin(diag2)
+        ){
+            alert('WINNER!');
+        }
     }
 
     const cells = document.querySelectorAll('.cell');
@@ -109,7 +156,17 @@ const gameController = (() => {
             if(player1Turn){
                 gameBoard.changeCell(cellIndex, player1.getMark())
                 gameBoard.printBoard();
-                console.log(player1.getMark());
+                e.target.innerHTML = player1.getMark();
+                changeTurn();
+                //checkCells();
+                //updateBoardState(cellIndex, player1.getMark());
+            }else{
+                gameBoard.changeCell(cellIndex, player2.getMark())
+                gameBoard.printBoard();
+                e.target.innerHTML = player2.getMark();
+                changeTurn();
+                //checkCells();
+                //updateBoardState(cellIndex, player2.getMark());
             }
         }
     }));
