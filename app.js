@@ -31,6 +31,22 @@ const gameBoard = (() => {
         return (board[getCell(cell)].marker == '');
     };
 
+    const checkForTie = () =>{
+        if(
+            board[0].marker != '' &&
+            board[1].marker != '' &&
+            board[2].marker != '' &&
+            board[3].marker != '' &&
+            board[4].marker != '' &&
+            board[5].marker != '' &&
+            board[6].marker != '' &&
+            board[7].marker != '' &&
+            board[8].marker != ''
+        ){
+            return true;
+        }
+    }
+
     const checkMatchingRows = () => {
         if(
             ((board[0].marker != '' && board[1].marker != '' && board[2].marker != '' )
@@ -91,7 +107,8 @@ const gameBoard = (() => {
         printBoard,
         resetBoard,
         cellIsEmpty,
-        checkForWinner
+        checkForWinner,
+        checkForTie
     };
 })();
 
@@ -138,6 +155,23 @@ const gameController = (() => {
         winnerPopup.appendChild(reset);
     }
 
+    const displayDraw = () => {
+        const winnerPopup = document.getElementById('winner');
+        let msg = document.createTextNode('Draw!');
+        let p = document.createElement('p');
+        p.appendChild(msg);
+        winnerPopup.appendChild(p);
+        winnerPopup.style.display = 'flex';
+
+        let reset = document.createElement('button');
+        reset.setAttribute('class', 'reset-btn');
+        reset.appendChild(document.createTextNode('Play Again?'));
+        reset.addEventListener('click', (e) => {
+            resetGame(e);
+        });
+        winnerPopup.appendChild(reset);
+    };
+
     cells.forEach(cell => cell.addEventListener('click', (e) => {
         cellIndex = parseInt(e.target.getAttribute('id'));
         if(gameBoard.cellIsEmpty(cellIndex)){
@@ -146,13 +180,15 @@ const gameController = (() => {
                 gameBoard.changeCell(cellIndex, player1.getMark())
                 e.target.innerHTML = player1.getMark();
                 if(gameBoard.checkForWinner()) displayWinner(player1.getName());
+                if(gameBoard.checkForTie()) displayDraw();
                 changeTurn();
             }else{
                 gameBoard.changeCell(cellIndex, player2.getMark())
                 e.target.innerHTML = player2.getMark();
                 if(gameBoard.checkForWinner()) displayWinner(player2.getName());
+                if(gameBoard.checkForTie()) displayDraw();
                 changeTurn();
-            }
+                }
             }
             
         }
